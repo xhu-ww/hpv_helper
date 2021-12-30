@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
+import 'package:hpv/res/styles.dart';
 import 'package:hpv/ui/view_model/base/provider_widget.dart';
 import 'package:hpv/ui/view_model/view_state/view_state.dart';
 import 'package:hpv/ui/view_model/view_state/view_state_widget.dart';
@@ -34,8 +35,11 @@ class _ZMPageState extends State<ZMPage> {
             child = const ViewStateErrorWidget();
             break;
           case ViewState.idle:
-            child = ListView(
-              children: model.list.map((e) => _buildItem(e)).toList(),
+            child = ListView.builder(
+              itemCount: model.list.length,
+              itemBuilder: (context, index) {
+                return _buildItem(model.list[index]);
+              },
             );
             break;
         }
@@ -51,6 +55,9 @@ class _ZMPageState extends State<ZMPage> {
   }
 
   Widget _buildItem(ZMHospitalInfo hospitalInfo) {
-    return Text(hospitalInfo.cname ?? "");
+    return Text(
+      hospitalInfo.cname ?? "",
+      style: Styles.headline1,
+    );
   }
 }

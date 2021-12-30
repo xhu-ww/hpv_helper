@@ -6,12 +6,7 @@ import 'base/base_list_model.dart';
 
 class ZMViewModel extends BaseListModel<ZMHospitalInfo> {
   @override
-  Future<List<ZMHospitalInfo>> loadData() async {
-    try {
-      await zmService.getHospitalList();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    return [];
+  Future<List<ZMHospitalInfo>> loadData() {
+    return zmService.getHospitalList();
   }
 }

@@ -1,9 +1,18 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
 import 'package:hpv/net/interceptor/zhimiao_header_interceptor.dart';
 import 'package:hpv/utils/json_transform_util.dart';
+
+_parseAndDecode(String response) {
+  return jsonDecode(response);
+}
+
+parseJson(String text) {
+  return compute(_parseAndDecode, text);
+}
 
 final ZMService zmService = ZMService._internal();
 
@@ -18,6 +27,7 @@ class ZMService {
     );
 
     _dio = Dio(options);
+    (_dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
     _dio.interceptors.addAll([
       ZMHeaderInterceptor(),
       LogInterceptor(requestBody: true, responseBody: true),
@@ -42,7 +52,8 @@ class ZMService {
     if (data == null) {
       return [];
     } else {
-      return JsonTransformUtil.transformList(data['list'])
+      var json = jsonDecode(data.toString());
+      return JsonTransformUtil.transformList(json['list'])
           .map((e) => ZMHospitalInfo.fromJson(e))
           .toList();
     }
