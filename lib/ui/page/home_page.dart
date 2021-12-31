@@ -110,7 +110,6 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Container(
               decoration: getCardBoxDecoration(),
-              padding: const EdgeInsets.all(16),
               height: double.infinity,
               child: const ZMPage(),
             ),

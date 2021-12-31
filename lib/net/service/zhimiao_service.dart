@@ -52,7 +52,7 @@ class ZMService {
     if (data == null) {
       return [];
     } else {
-      var json = jsonDecode(data.toString());
+      var json = jsonDecode(data);
       return JsonTransformUtil.transformList(json['list'])
           .map((e) => ZMHospitalInfo.fromJson(e))
           .toList();
