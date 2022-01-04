@@ -1,14 +1,20 @@
 import 'dart:convert' as convert;
 
 class JsonTransformUtil {
-
   /// 用于分页的JSON  data -> content
   static List<dynamic> transformListFromContent(dynamic json) {
-    if(json == null){
+    if (json == null) {
       return [];
     }
     var content = json['content'];
     return (content is List<dynamic>) ? content : [];
+  }
+
+  static dynamic jsonDecode(dynamic json) {
+    if (json is String) {
+      return convert.jsonDecode(json);
+    }
+    return json;
   }
 
   static List<dynamic> transformList(dynamic json) =>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hpv/model/entity/user_info.dart';
 import 'package:hpv/res/colors.dart';
 import 'package:hpv/res/styles.dart';
@@ -26,8 +27,11 @@ class _ZMPageState extends State<ZMPage> {
   Widget build(BuildContext context) {
     return ProviderWidget<ZMViewModel>(
       model: ZMViewModel(),
-      onModelReady: (model) {
-        model.initData();
+      onModelReady: (model) async {
+        await model.initData();
+        EasyLoading.show(status: "正在模拟人操作同步数据");
+        await model.syncDetailData();
+        EasyLoading.dismiss();
       },
       builder: (context, model, child) {
         return LayoutBuilder(

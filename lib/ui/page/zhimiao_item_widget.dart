@@ -39,9 +39,17 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
                     const SizedBox(height: 2),
                     _buildTextItem("电话号码", hospitalInfo.tel),
                     const SizedBox(height: 2),
-                    _buildTextItem("四价预约时间", hospitalInfo.siJiaDate),
+                    _buildTextItem(
+                      "四价预约时间",
+                      hospitalInfo.siJiaProduct?.date,
+                      showWaring: true,
+                    ),
                     const SizedBox(height: 2),
-                    _buildTextItem("九价预约时间", hospitalInfo.jiuJiaDate),
+                    _buildTextItem(
+                      "九价预约时间",
+                      hospitalInfo.jiuJiaProduct?.date,
+                      showWaring: true,
+                    ),
                   ],
                 ),
               ),
@@ -82,9 +90,27 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
     );
   }
 
-  Widget _buildTextItem(String title, dynamic value, {String? unit}) {
+  Widget _buildTextItem(
+    String title,
+    dynamic value, {
+    bool showWaring = false,
+  }) {
+    if (showWaring) {
+      return RichText(
+        text: TextSpan(
+          style: Styles.text3,
+          children: [
+            TextSpan(text: '$title：'),
+            TextSpan(
+              text: '${value ?? ''}',
+              style: Styles.text3.copyWith(color: Colors.red),
+            ),
+          ],
+        ),
+      );
+    }
     return Text(
-      '$title：${value ?? ''}${unit ?? ''}',
+      '$title：${value ?? ''}',
       style: Styles.text3,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,

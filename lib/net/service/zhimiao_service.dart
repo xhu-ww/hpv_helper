@@ -1,18 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:hpv/model/entity/product_info.dart';
 import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
 import 'package:hpv/net/interceptor/zhimiao_header_interceptor.dart';
 import 'package:hpv/utils/json_transform_util.dart';
-
-_parseAndDecode(String response) {
-  return jsonDecode(response);
-}
-
-parseJson(String text) {
-  return compute(_parseAndDecode, text);
-}
 
 final ZMService zmService = ZMService._internal();
 
@@ -27,7 +19,6 @@ class ZMService {
     );
 
     _dio = Dio(options);
-    (_dio.transformer as DefaultTransformer).jsonDecodeCallback = parseJson;
     _dio.interceptors.addAll([
       ZMHeaderInterceptor(),
       LogInterceptor(requestBody: true, responseBody: true),
@@ -52,9 +43,50 @@ class ZMService {
     if (data == null) {
       return [];
     } else {
-      var json = jsonDecode(data);
+      var json = JsonTransformUtil.jsonDecode(data);
       return JsonTransformUtil.transformList(json['list'])
           .map((e) => ZMHospitalInfo.fromJson(e))
+          .toList();
+    }
+  }
+
+  /// 获取医院预约详细信息
+  Future getHospitalDetail({required int? id}) async {
+    var response = await _dio.get(
+      '/sc/wx/HandlerSubscribe.ashx',
+      queryParameters: {
+        'act': 'GetCustSubscribeDateAll',
+        'id': id,
+        'pid': 1,
+        'month': 202201,
+      },
+    );
+    // var data = response.data;
+    // if (data == null) {
+    //   return [];
+    // } else {
+    //   var json = jsonDecode(data);
+    //   return JsonTransformUtil.transformList(json['list'])
+    //       .map((e) => ZMHospitalInfo.fromJson(e))
+    //       .toList();
+    // }
+  }
+
+  Future<List<ProductInfo>> getHospitalProduct({required int? id}) async {
+    var response = await _dio.get(
+      '/sc/wx/HandlerSubscribe.ashx',
+      queryParameters: {
+        'act': 'CustomerProduct',
+        'id': id,
+      },
+    );
+    var data = response.data;
+    if (data == null) {
+      return [];
+    } else {
+      var json = JsonTransformUtil.jsonDecode(data);
+      return JsonTransformUtil.transformList(json['list'])
+          .map((e) => ProductInfo.fromJson(e))
           .toList();
     }
   }
