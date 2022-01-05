@@ -3,6 +3,7 @@ import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
 import 'package:hpv/res/colors.dart';
 import 'package:hpv/res/styles.dart';
 import 'package:hpv/ui/widgets/decorations.dart';
+import 'package:hpv/ui/widgets/timer_text.dart';
 import 'package:hpv/utils/text_util.dart';
 
 class ZMItemWidget extends StatefulWidget {
@@ -21,6 +22,7 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
   @override
   Widget build(BuildContext context) {
     var hospitalInfo = widget.hospitalInfo;
+    var jiujiaDate = hospitalInfo.jiuJiaProduct?.startDate;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: getCardBoxDecoration(color: Colours.main_bg_color),
@@ -53,27 +55,9 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
                   ],
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 2),
-                  _buildStatusWidget(content: '自动秒杀'),
-                  const SizedBox(height: 4),
-                  RichText(
-                    text: const TextSpan(
-                      style: Styles.text4,
-                      children: [
-                        TextSpan(text: '倒计时：'),
-                        TextSpan(
-                          text: '1分25秒',
-                          style: TextStyle(fontSize: 10, color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+              jiujiaDate == null
+                  ? const SizedBox()
+                  : _buildPanicBuyingWidget(jiujiaDate),
             ],
           ),
         ],
@@ -129,6 +113,20 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
         content,
         style: TextStyle(color: textColor, fontSize: 11),
       ),
+    );
+  }
+
+  // 秒杀 抢购
+  Widget _buildPanicBuyingWidget(DateTime startDateTime) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        const SizedBox(height: 2),
+        _buildStatusWidget(content: '自动秒杀'),
+        const SizedBox(height: 4),
+        TimerText(title: '倒计时：', endDateTime: startDateTime),
+      ],
     );
   }
 }
