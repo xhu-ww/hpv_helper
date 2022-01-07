@@ -1,22 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hpv/model/entity/product_info.dart';
-import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
+import 'package:hpv/model/entity/zhimiao_hospital_info.dart';
 import 'package:hpv/net/service/zhimiao_service.dart';
 
 import 'base/base_list_model.dart';
 
 class ZMViewModel extends BaseListModel<ZMHospitalInfo> {
   @override
-  Future<List<ZMHospitalInfo>> loadData() {
-    return zmService.getHospitalList();
-  }
+  Future<List<ZMHospitalInfo>> loadData() async {
+    List<ZMHospitalInfo> list = [];
+    var tempList = await zmService.getHospitalList();
+    for (var info in tempList) {
+      var products = await _getDetail(info.id);
+      bool hasTargetProduct = false;
+      for (ProductInfo product in products) {
+        if (product.text?.startsWith('九价人乳头') ?? false) {
+          info.jiuJiaProduct = product;
+          hasTargetProduct = product.startDate != null;
+        }
 
-  Future syncDetailData() async {
-    for (var e in list) {
-      var products = await _getDetail(e.id);
-      e.setProducts(products);
+        if (product.text?.startsWith('四价人乳头') ?? false) {
+          info.siJiaProduct = product;
+          hasTargetProduct = product.startDate != null;
+        }
+      }
+
+      if (hasTargetProduct) {
+        list.add(info);
+      }
     }
-    notifyListeners();
+    return list;
   }
 
   // 每次请求间隔1秒，避免被判断为异常请求

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:hpv/model/entity/user_info.dart';
 import 'package:hpv/ui/view_model/base/provider_widget.dart';
 import 'package:hpv/ui/view_model/view_state/view_state.dart';
 import 'package:hpv/ui/view_model/view_state/view_state_widget.dart';
-import 'package:hpv/ui/view_model/zhimiao_view_model.dart';
+import 'package:hpv/ui/view_model/yuemiao_view_model.dart';
 import 'package:hpv/ui/widgets/user_info_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'zhimiao_item_widget.dart';
+import 'yuemiao_item_widget.dart';
 
 class YMPage extends StatefulWidget {
   const YMPage({Key? key}) : super(key: key);
@@ -17,11 +16,10 @@ class YMPage extends StatefulWidget {
 }
 
 class _YMPageState extends State<YMPage> {
-
   @override
   Widget build(BuildContext context) {
-    return ProviderWidget<ZMViewModel>(
-      model: ZMViewModel(),
+    return ProviderWidget<YMViewModel>(
+      model: YMViewModel(),
       onModelReady: (model) {
         model.initData();
       },
@@ -40,47 +38,49 @@ class _YMPageState extends State<YMPage> {
     );
   }
 
-  Widget _buildMainWidget(ZMViewModel model, {required double maxWidth}) {
+  Widget _buildMainWidget(YMViewModel model, {required double maxWidth}) {
+    Widget child;
     switch (model.viewState) {
       case ViewState.busy:
-        return const ViewStateBusyWidget();
+        child = const ViewStateBusyWidget();
+        break;
       case ViewState.empty:
-        return const ViewStateEmptyWidget();
+        child = const ViewStateEmptyWidget();
+        break;
       case ViewState.error:
-        return const ViewStateErrorWidget();
+        child = const ViewStateErrorWidget();
+        break;
       case ViewState.idle:
         var crossAxisCount = maxWidth ~/ 360;
         if (crossAxisCount == 0) crossAxisCount = 1;
         var cellWidth = (maxWidth - 16 * crossAxisCount - 16) / crossAxisCount;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            UserInfoWidget(
-              userInfo: UserInfo(
-                name: '王文',
-                phone: '18380426764',
-                idCard: '51112310029329485',
-              ),
-            ),
-            Expanded(
-              child: GridView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 16,
-                  childAspectRatio: cellWidth / 100,
-                  mainAxisSpacing: 16,
-                  crossAxisCount: crossAxisCount,
-                ),
-                itemCount: model.list.length,
-                itemBuilder: (context, index) => ZMItemWidget(
-                  hospitalInfo: model.list[index],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
+        child = GridView.builder(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisSpacing: 16,
+            childAspectRatio: cellWidth / 100,
+            mainAxisSpacing: 16,
+            crossAxisCount: crossAxisCount,
+          ),
+          itemCount: model.list.length,
+          itemBuilder: (context, index) => YMItemWidget(
+            hospitalInfo: model.list[index],
+          ),
         );
     }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        UserInfoWidget(
+          userInfo: model.userInfo,
+          onRequestUserInfoCallback: (tk, cookie) {
+            model.loadUserInfo(tk: tk, cookie: cookie);
+          },
+        ),
+        Expanded(child: child),
+        const SizedBox(height: 16),
+      ],
+    );
   }
 }

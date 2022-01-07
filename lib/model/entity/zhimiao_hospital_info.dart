@@ -24,16 +24,4 @@ class ZMHospitalInfo {
     city = JsonTransformUtil.parseInt(json['city']);
     county = JsonTransformUtil.parseInt(json['county']);
   }
-
-  void setProducts(List<ProductInfo> list) {
-    for (ProductInfo info in list) {
-      if (info.text?.startsWith('九价人乳头') ?? false) {
-        jiuJiaProduct = info;
-      }
-
-      if (info.text?.startsWith('四价人乳头') ?? false) {
-        siJiaProduct = info;
-      }
-    }
-  }
 }

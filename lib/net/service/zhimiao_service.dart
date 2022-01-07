@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:hpv/model/entity/product_info.dart';
-import 'package:hpv/model/entity/zhimiao_hospital_info_entity.dart';
+import 'package:hpv/model/entity/zhimiao_hospital_info.dart';
 import 'package:hpv/net/interceptor/zhimiao_header_interceptor.dart';
 import 'package:hpv/utils/json_transform_util.dart';
 
@@ -50,28 +50,6 @@ class ZMService {
     }
   }
 
-  /// 获取医院预约详细信息
-  Future getHospitalDetail({required int? id}) async {
-    var response = await _dio.get(
-      '/sc/wx/HandlerSubscribe.ashx',
-      queryParameters: {
-        'act': 'GetCustSubscribeDateAll',
-        'id': id,
-        'pid': 1,
-        'month': 202201,
-      },
-    );
-    // var data = response.data;
-    // if (data == null) {
-    //   return [];
-    // } else {
-    //   var json = jsonDecode(data);
-    //   return JsonTransformUtil.transformList(json['list'])
-    //       .map((e) => ZMHospitalInfo.fromJson(e))
-    //       .toList();
-    // }
-  }
-
   Future<List<ProductInfo>> getHospitalProduct({required int? id}) async {
     var response = await _dio.get(
       '/sc/wx/HandlerSubscribe.ashx',
@@ -87,6 +65,33 @@ class ZMService {
       var json = JsonTransformUtil.jsonDecode(data);
       return JsonTransformUtil.transformList(json['list'])
           .map((e) => ProductInfo.fromJson(e))
+          .toList();
+    }
+  }
+
+  /// 获取医院预约详细信息 month 202201
+  Future<List<String>> getHospitalDetail({
+    required int id,
+    required int month,
+  }) async {
+    var response = await _dio.get(
+      '/sc/wx/HandlerSubscribe.ashx',
+      queryParameters: {
+        'act': 'GetCustSubscribeDateAll',
+        'id': id,
+        'pid': 1,
+        'month': 202201,
+      },
+    );
+    var data = response.data;
+    if (data == null) {
+      return [];
+    } else {
+      var json = JsonTransformUtil.jsonDecode(data);
+      return JsonTransformUtil.transformList(json['list'])
+          .map((childJson) => childJson['date'])
+          .where((element) => element != null)
+          .cast<String>()
           .toList();
     }
   }

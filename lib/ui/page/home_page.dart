@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hpv/model/business_type.dart';
 import 'package:hpv/res/colors.dart';
 import 'package:hpv/res/styles.dart';
+import 'package:hpv/ui/page/yuemiao_page.dart';
 import 'package:hpv/ui/page/zhimiao_page.dart';
 import 'package:hpv/ui/widgets/decorations.dart';
-import 'package:hpv/ui/widgets/dialog_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,12 +16,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _selectedBusinessType = BusinessTypeEnum.yuemiao;
 
-  /// 选择地区
-  void _selectAddress() {
-    DialogHelper.showRightWindow(
-        context: context, child: Container(), title: '选择地区');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,33 +26,23 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [_buildTopMenuAction()],
-        title: const Text('消息', style: Styles.headline1),
+        title: const Text('约苗 & 知苗易约', style: Styles.headline1),
       ),
       body: _buildBody(),
     );
   }
 
   Widget _buildTopMenuAction() {
-    var key = GlobalKey();
-    return GestureDetector(
-      onTap: _selectAddress,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        key: key,
-        decoration: getOutLineDecoration(radius: 16),
-        child: Row(
-          children: const [
-            SizedBox(width: 8),
-            Text('成都市', style: Styles.headline2),
-            SizedBox(width: 4),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
-              color: Colours.color_title,
-            )
-          ],
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: getOutLineDecoration(radius: 16),
+      child: Row(
+        children: const [
+          SizedBox(width: 16),
+          Text('仅限成都市', style: Styles.headline2),
+          SizedBox(width: 16),
+        ],
       ),
     );
   }
@@ -111,7 +95,10 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               decoration: getCardBoxDecoration(),
               height: double.infinity,
-              child: const ZMPage(),
+              child: IndexedStack(
+                index: _selectedBusinessType.index,
+                children: const [YMPage(), YMPage()],
+              ),
             ),
           ),
         ],

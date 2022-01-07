@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hpv/model/entity/yuemiao_hospital_info.dart';
 import 'package:hpv/model/entity/zhimiao_hospital_info.dart';
 import 'package:hpv/res/colors.dart';
 import 'package:hpv/res/styles.dart';
@@ -6,23 +7,23 @@ import 'package:hpv/ui/widgets/decorations.dart';
 import 'package:hpv/ui/widgets/timer_text.dart';
 import 'package:hpv/utils/text_util.dart';
 
-class ZMItemWidget extends StatefulWidget {
-  final ZMHospitalInfo hospitalInfo;
+class YMItemWidget extends StatefulWidget {
+  final YMHospitalInfo hospitalInfo;
 
-  const ZMItemWidget({
+  const YMItemWidget({
     Key? key,
     required this.hospitalInfo,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ZMItemWidgetState();
+  State<StatefulWidget> createState() => _YMItemWidgetState();
 }
 
-class _ZMItemWidgetState extends State<ZMItemWidget> {
+class _YMItemWidgetState extends State<YMItemWidget> {
   @override
   Widget build(BuildContext context) {
     var hospitalInfo = widget.hospitalInfo;
-    var jiujiaDate = hospitalInfo.jiuJiaProduct?.startDate;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: getCardBoxDecoration(color: Colours.main_bg_color),
@@ -30,7 +31,7 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTitle(hospitalInfo.cname),
+          _buildTitle(hospitalInfo.name),
           Row(
             children: [
               Expanded(
@@ -39,25 +40,15 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 2),
-                    _buildTextItem("电话号码", hospitalInfo.tel),
+                    _buildTextItem("地址", hospitalInfo.address),
                     const SizedBox(height: 2),
-                    _buildTextItem(
-                      "四价预约时间",
-                      hospitalInfo.siJiaProduct?.date,
-                      showWaring: true,
-                    ),
+                    _buildTextItem("疫苗名称", hospitalInfo.vaccineName),
                     const SizedBox(height: 2),
-                    _buildTextItem(
-                      "九价预约时间",
-                      hospitalInfo.jiuJiaProduct?.date,
-                      showWaring: true,
-                    ),
+                    _buildTextItem("预约时间", hospitalInfo.startTime),
                   ],
                 ),
               ),
-              jiujiaDate == null
-                  ? const SizedBox()
-                  : _buildPanicBuyingWidget(jiujiaDate),
+              _buildPanicBuyingWidget(hospitalInfo.startDateTime),
             ],
           ),
         ],
@@ -117,7 +108,10 @@ class _ZMItemWidgetState extends State<ZMItemWidget> {
   }
 
   // 秒杀 抢购
-  Widget _buildPanicBuyingWidget(DateTime startDateTime) {
+  Widget _buildPanicBuyingWidget(DateTime? startDateTime) {
+    if (startDateTime == null) {
+      return const SizedBox();
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,

@@ -27,16 +27,28 @@ class _TimerTextState extends State<TimerText> {
     endDateTime = widget.endDateTime;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (mounted) {
+        var startTime = DateTime.now();
         setState(() {
-          timeDescription = calculateTime(endDateTime);
+          timeDescription = calculateTime(
+            startTime: startTime,
+            endDateTime: endDateTime,
+          );
         });
+        if (startTime.isAfter(endDateTime)) {
+          timer.cancel();
+        }
       }
     });
   }
 
-  String calculateTime(DateTime endDateTime) {
-    var now = DateTime.now();
-    var duration = endDateTime.difference(now);
+  String calculateTime({
+    required DateTime startTime,
+    required DateTime endDateTime,
+  }) {
+    if (startTime.isAfter(endDateTime)) {
+      return '已过秒杀开始日期';
+    }
+    var duration = endDateTime.difference(startTime);
     var totalSeconds = duration.inSeconds;
     int hour = totalSeconds / 60 ~/ 60;
     int min = ((totalSeconds / 60) % 60).toInt();

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hpv/net/interceptor/zhimiao_api_interceptor.dart';
 
 /// Toast工具类
 class MyToast {
@@ -24,10 +25,12 @@ class MyToast {
           if (exception is SocketException) {
             _errorMessage = '网络连接超时';
           } else {
-            _errorMessage = '出现未知错误';
+            _errorMessage = error.message;
           }
           break;
       }
+    } else if (error is NotSuccessException) {
+      _errorMessage = error.message;
     }
 
     if (_errorMessage?.isNotEmpty ?? false) {
