@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
               height: double.infinity,
               child: IndexedStack(
                 index: _selectedBusinessType.index,
-                children: const [YMPage(), YMPage()],
+                children: const [YMPage(), ZMPage()],
               ),
             ),
           ),

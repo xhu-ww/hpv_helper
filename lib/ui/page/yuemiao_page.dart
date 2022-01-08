@@ -66,6 +66,9 @@ class _YMPageState extends State<YMPage> {
           itemCount: model.list.length,
           itemBuilder: (context, index) => YMItemWidget(
             hospitalInfo: model.list[index],
+            onReservationCallback: (hospitalInfo) {
+              model.reservation(vaccineIndex: hospitalInfo.vaccineCode,seckillId:hospitalInfo.id);
+            },
           ),
         );
     }

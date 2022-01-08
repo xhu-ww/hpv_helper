@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hpv/model/entity/yuemiao_hospital_info.dart';
-import 'package:hpv/model/entity/zhimiao_hospital_info.dart';
 import 'package:hpv/res/colors.dart';
 import 'package:hpv/res/styles.dart';
 import 'package:hpv/ui/widgets/decorations.dart';
@@ -10,9 +9,13 @@ import 'package:hpv/utils/text_util.dart';
 class YMItemWidget extends StatefulWidget {
   final YMHospitalInfo hospitalInfo;
 
+  // 预约
+  final ValueChanged<YMHospitalInfo> onReservationCallback;
+
   const YMItemWidget({
     Key? key,
     required this.hospitalInfo,
+    required this.onReservationCallback,
   }) : super(key: key);
 
   @override
@@ -117,7 +120,12 @@ class _YMItemWidgetState extends State<YMItemWidget> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         const SizedBox(height: 2),
-        _buildStatusWidget(content: '预约秒杀'),
+        GestureDetector(
+          onTap: () {
+            widget.onReservationCallback.call(widget.hospitalInfo);
+          },
+          child: _buildStatusWidget(content: '预约秒杀'),
+        ),
         const SizedBox(height: 4),
         TimerText(title: '倒计时：', endDateTime: startDateTime),
       ],

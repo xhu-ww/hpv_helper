@@ -66,4 +66,25 @@ class YMService {
       return list.isEmpty ? null : list.first;
     }
   }
+
+  // 预约疫苗  seckillId={seckillId}&linkmanId={linkmanId}&idCardNo={idCardNo}&vaccineIndex={vaccineIndex
+  Future reservation({
+    required String tk,
+    required String cookie,
+    required int? seckillId,
+    required int? linkmanId,
+    required String? idCardNo,
+    required String? vaccineIndex,
+  }) async {
+    _setHeaderInfo(tk: tk, cookie: cookie);
+    await _dio.get(
+      '/seckill/seckill/subscribe.do',
+      queryParameters: {
+        'seckillId': seckillId,
+        'linkmanId': linkmanId,
+        'idCardNo': idCardNo,
+        'vaccineIndex': vaccineIndex,
+      },
+    );
+  }
 }

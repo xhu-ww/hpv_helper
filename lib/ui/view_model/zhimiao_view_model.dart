@@ -35,7 +35,7 @@ class ZMViewModel extends BaseListModel<ZMHospitalInfo> {
   // 每次请求间隔1秒，避免被判断为异常请求
   Future<List<ProductInfo>> _getDetail(int? id) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 500));
       var list = await zmService.getHospitalProduct(id: id);
       return list;
     } catch (e) {
