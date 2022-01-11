@@ -7,6 +7,7 @@ import 'base/base_list_model.dart';
 
 class YMViewModel extends BaseListModel<YMHospitalInfo> {
   UserInfo? _userInfo;
+  Map<int, Timer> appointmentTaskMap = {};
 
   String? _tk;
   String? _cookie;
@@ -52,5 +53,31 @@ class YMViewModel extends BaseListModel<YMHospitalInfo> {
       showErrorToast(error: e);
       debugPrint(e.toString());
     }
+  }
+
+  /// 添加预约任务
+  void addAppointmentTask(YMHospitalInfo hospitalInfo) {
+    var id = hospitalInfo.id;
+    if (id == null) {
+      return;
+    }
+    if (appointmentTaskMap.containsKey(id)) {
+      var timer = appointmentTaskMap[id];
+      timer?.cancel();
+    }
+    appointmentTaskMap[id] = Timer.periodic(
+      const Duration(milliseconds: 500),
+      (timer) {
+
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    appointmentTaskMap.forEach((key, value) {
+      value.cancel();
+    });
+    super.dispose();
   }
 }
